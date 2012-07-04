@@ -2,9 +2,36 @@
 <html lang="ja">
 	<head>
 		<meta charset="UTF-8">
-		<title>js-nbody</title>
-	</head>
-	<body>
+		<title>nbody.js</title>
 		<script type="text/javascript" src="js/nbody.js"></script>
+<!-- 		<script type="text/javascript" src="js/glMatrix-0.9.5.min.js"></script> -->
+		
+<script id="shaderFs" type="x-shader/x-fragment">
+    precision mediump float;
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_FragColor = vColor;
+    }
+</script>
+
+<script id="shaderVs" type="x-shader/x-vertex">
+    attribute vec3 aVertexPosition;
+    attribute vec4 aVertexColor;
+
+    uniform mat4 uMVMatrix;
+    uniform mat4 uPMatrix;
+
+    varying vec4 vColor;
+
+    void main(void) {
+        gl_Position = uPMatrix * uMVMatrix * vec4(aVertexPosition, 1.0);
+        vColor = aVertexColor;
+    }
+</script>
+	<body onload="runNbodySystem();">
+		<p id="printElapsed">test</p>
+<!-- 		<canvas id="nbodyCanvas" style="border: none;" width="500" height="500"></canvas> -->
 	</body>
 </html>
