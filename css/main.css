@@ -34,16 +34,27 @@ p {
 	line-height: 1.4;
 }
 
+
 #screen {
 	padding:10px 0px 10px 0px;
 	position: relative;
 }
 
 #canvasArea {
-	width: 500px;
-	height: 500px;
+	width: 400px;
+	height: 400px;
 	position: absolute;
-	top: 50px;
+	top: 200px;
+}
+
+#info {
+	margin-top: 20px;
+}
+
+#info p {
+	font-size: 15px;
+	line-height: 1.2;
+	font-family: "courier";
 }
 
 #textArea {
@@ -52,5 +63,5 @@ p {
 }
 
 #description {
-	margin-top: 550px;
+	margin-top: 700px;
 }

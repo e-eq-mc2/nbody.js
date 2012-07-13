@@ -10,7 +10,7 @@
 		<script type="text/javascript" src="js/mjs.js"></script>
 		<script type="text/javascript" src="js/nbody.js"></script>
 		<script type="text/javascript" src="js/webgl.js"></script>
-		<script id="vs" type="x-shader/x-vertex">
+		<script id="vxs" type="x-shader/x-vertex">
 attribute vec3 position;
 attribute vec2 texCoord;
 
@@ -26,17 +26,17 @@ varying vec4 vColor;
 
 void main(void) {
 	vColor = color;
-	if ( drawMode == 0 || drawMode == 1) { // point or point-sprite
+	if (drawMode == 0 || drawMode == 1) { // point or point-sprite
 		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 		gl_PointSize = min(32.0, max(1.0, pointSize / gl_Position.w));
-	} else if ( drawMode == 2 ) { // bill-borad
+	} else if (drawMode == 2) { // bill-borad
 		gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
 		vTexCoord = texCoord;
 	}
 }
 		</script>
 		
-		<script id="fs" type="x-shader/x-fragment">
+		<script id="fgs" type="x-shader/x-fragment">
 precision mediump float;
 
 uniform sampler2D texSampler;
@@ -46,19 +46,19 @@ varying vec4 vColor;
 varying vec2 vTexCoord;
 
 void main(void){
-	if( drawMode == 0 ) {
+	if (drawMode == 0) {
 		gl_FragColor = vColor;
-	} else if( drawMode == 1 ) {
+	} else if (drawMode == 1) {
 		vec4 texColor = texture2D(texSampler, gl_PointCoord);
-		if ( texColor.a == 0.0 ) {
-			discard;
+		if (texColor.a == 0.0) {
+			discard; // no output fragment
 		} else {
 			gl_FragColor = vColor * texColor;
 		}
-	} else if( drawMode == 2 ) {
+	} else if (drawMode == 2) {
 		vec4 texColor = texture2D(texSampler, vTexCoord);
-		if ( texColor.a == 0.0 ) {
-			discard;
+		if (texColor.a == 0.0) {
+			discard; // no output fragment
 		} else {
 			gl_FragColor = vColor * texColor;
 		}
@@ -88,21 +88,15 @@ F_i = G m_{i} \cdot \sum_{\substack{ 1 \le j \ge N \\ j \ne i}} \frac{m_j \vec{r
 F_i \approx G m_{i} \cdot \sum_{1 \le j \ge N} \frac{m_j \vec{r}_{ij}}{ \left( \| \vec{r}_{ij} \|^2 + \epsilon ^2 \right) ^{3 / 2}}
 \end{align*}
 -->	
+				<p>
+					<label><input type="radio" name="drawMode" value="0" checked> point</label>
+					<label><input type="radio" name="drawMode" value="1"> point-sprite</label>
+					<label><input type="radio" name="drawMode" value="2"> bill-board </label>
+				</p>
 				<div id="info"></div>
 			</div>
 		</div>
 		<div id="description">
-			<p>
-				<label>
-					<input type="radio" name="drawMode" value="0" checked> point
-				</label>
-				<label>
-					<input type="radio" name="drawMode" value="1"        > point-sprite
-				</label>
-				<label>
-					<input type="radio" name="drawMode" value="2"        > bill-board
-				</label>
-			</p>
 		</div>
 	</body>
 </html>

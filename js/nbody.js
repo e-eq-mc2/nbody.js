@@ -3,6 +3,7 @@
  */
 
 function NbodySystem(num) {
+"use strict";
 	this.num = num;
 	this.pos = new Float32Array(this.num*3);
 	this.vel = new Float32Array(this.num*3);
@@ -13,20 +14,21 @@ function NbodySystem(num) {
 }
 
 NbodySystem.prototype.init = function () {
+"use strict";
 	var num = this.num;
-	for (var i = 0; i < num; ++i) {
+	for (var i=0; i < num; ++i) {
 		var u = randomV3();
 		var ii = i * 3;
-		this.pos[ii  ] = u[0] * 0.5;
-		this.pos[ii+1] = u[1] * 0.5;
-		this.pos[ii+2] = u[2] * 0.5;
-		
-		this.vel[ii  ] = u[0] * 0.5;
-		this.vel[ii+1] = u[1] * 0.5;
-		this.vel[ii+2] = u[2] * 0.5;
+        var s = 0.5;
+		this.pos[ii  ] = u[0] * s;
+		this.pos[ii+1] = u[1] * s;
+		this.pos[ii+2] = u[2] * s;
+		this.vel[ii  ] = u[0] * s;
+		this.vel[ii+1] = u[1] * s;
+		this.vel[ii+2] = u[2] * s;
 		
 		this.mas[i   ] = Math.random();
-		if ( i == 0 ) {
+		if (i == 0) {
 			this.pos[ii  ] = 0;
 			this.pos[ii+1] = 0;
 			this.pos[ii+2] = 0;
@@ -52,12 +54,13 @@ NbodySystem.prototype.init = function () {
 };
 
 NbodySystem.prototype.update = function () {
+"use strict";
 	var num = this.num;
 	var dt = this.dt;
 	var soften2 = this.soften2;
 	var damping = this.damping;
 	// update velocity
-	for (var i = 0; i < num; ++i) {
+	for (var i=0; i < num; ++i) {
 		var ii = i * 3;
 		var pix = this.pos[ii   ];
 		var piy = this.pos[ii+ 1];
@@ -65,8 +68,8 @@ NbodySystem.prototype.update = function () {
 		var aix = 0;
 		var aiy = 0;
 		var aiz = 0;
-		for (var j = 0; j < num; ++j) {
-			//if ( i == j ) continue;
+		for (var j=0; j < num; ++j) {
+			//if (i == j) continue;
 			var jj = j * 3;
 			var pjx = this.pos[jj  ];
 			var pjy = this.pos[jj+1];
@@ -88,10 +91,10 @@ NbodySystem.prototype.update = function () {
 		this.vel[ii+2] = (this.vel[ii+2] + aiz*dt)*damping;
 	}
 	// update position
-	for (var i = 0; i < num; ++i) {
+	for (var i=0; i < num; ++i) {
 		var ii = i * 3;
 		this.pos[ii  ] += this.vel[ii  ] * dt;
 		this.pos[ii+1] += this.vel[ii+1] * dt;
 		this.pos[ii+2] += this.vel[ii+2] * dt;
 	}
-}
+};
