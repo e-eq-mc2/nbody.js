@@ -13,9 +13,9 @@ $(function () {
 	var texObj = webglUtil.initTexture(gl, "img/karada.png");
 
 	var attrib = {
-		position : {
+		vertex : {
 			vbo      : gl.createBuffer(),
-			location : gl.getAttribLocation(prgObj, "position"),
+			location : gl.getAttribLocation(prgObj, "vertex"),
 			size     : 3, // number of components per generic vertex attribute
 			type     : gl.FLOAT
 		},
@@ -49,7 +49,7 @@ $(function () {
 		}
 	};
 	
-	var NUM_BODY =  1024;
+	var NUM_BODY = 512;
 	var MAX_LOOP = 1000;
 	
 	var nbSys = new NbodySystem(NUM_BODY);
@@ -99,27 +99,27 @@ $(function () {
 			case DRAW_MODE.POINT:
 				gl.uniform4fv(uniform.color.location, [0, 0, 0, 0.5]);
 				gl.uniform1f(uniform.pointSize.location, 8);
-				setAttrib(gl, attrib.position, nbSys.pos);
+				setAttrib(gl, attrib.vertex, nbSys.pos);
 				
 				gl.drawArrays(gl.POINTS, 0, nbSys.num);
 				
-				unsetAttrib(gl, attrib.position);
+				unsetAttrib(gl, attrib.vertex);
 				break;
 			case DRAW_MODE.POINT_SPRITE:
 				gl.uniform1i(uniform.texSampler.location, 0);
 				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.7]);
 				gl.uniform1f(uniform.pointSize.location, 32);
-				setAttrib(gl, attrib.position, nbSys.pos);
+				setAttrib(gl, attrib.vertex, nbSys.pos);
 				
 				gl.drawArrays(gl.POINTS, 0, nbSys.num);
 				
-				unsetAttrib(gl, attrib.position);
+				unsetAttrib(gl, attrib.vertex);
 				break;
 			case DRAW_MODE.BILL_BOARD:
 				var board = new BillBoard(nbSys.num, nbSys.pos, 0.05, 0.05);
 				gl.uniform1i(uniform.texSampler.location, 0);
 				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.7]);
-				setAttrib(gl, attrib.position, board.pos);
+				setAttrib(gl, attrib.vertex, board.pos);
 				setAttrib(gl, attrib.texCoord, board.tex);
 				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, t3Idx.ibo);
 				
@@ -129,7 +129,7 @@ $(function () {
 				
 				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, null);
 				unsetAttrib(gl, attrib.texCoord);
-				unsetAttrib(gl, attrib.position);
+				unsetAttrib(gl, attrib.vertex);
 				break;
 			default:
 				alert("ERROR: No supported DRAW_MODE.");
