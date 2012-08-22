@@ -10,7 +10,7 @@ $(function () {
 	
 	var gl     = webglUtil.initGL(canvas);
 	var prgObj = webglUtil.initShaders(gl);
-	var texObj = webglUtil.initTexture(gl, "img/karada.png");
+	var texObj = webglUtil.initTexture(gl, "img/karada1.png");
 
 	var attrib = {
 		vertex : {
@@ -49,8 +49,8 @@ $(function () {
 		}
 	};
 	
-	var NUM_BODY = 512;
-	var MAX_LOOP = 1000;
+	var NUM_BODY =  256;
+	var MAX_LOOP = 5000;
 	
 	var nbSys = new NbodySystem(NUM_BODY);
 	nbSys.init();
@@ -116,7 +116,7 @@ $(function () {
 				unsetAttrib(gl, attrib.vertex);
 				break;
 			case DRAW_MODE.BILL_BOARD:
-				var board = new BillBoard(nbSys.num, nbSys.pos, 0.05, 0.05);
+				var board = new BillBoard(nbSys.num, nbSys.pos, 0.08, 0.08);
 				gl.uniform1i(uniform.texSampler.location, 0);
 				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.7]);
 				setAttrib(gl, attrib.vertex, board.pos);
@@ -150,6 +150,8 @@ $(function () {
 		var ela1 = Math.ceil(timer1.elapsedMsec());
 		var ave0 = Math.ceil(timer0.elapsedTotalMsec()/loop);
 		var ave1 = Math.ceil(timer1.elapsedTotalMsec()/loop);
+		angle += deg2rad(360/10) * ela0/1000;
+		
 		ela0 = num2str(ela0, 4);
 		ela1 = num2str(ela1, 4);
 		ave0 = num2str(ave0, 4);
@@ -159,7 +161,6 @@ $(function () {
 		    '<p>' +  'N-body Elapsed: ' + ela1 + ' msec ' + '(ave. ' +  ave1 + ')' + '</p>' +
 			'<p>' +  '+WebGL Elapsed: ' + ela0 + ' msec ' + '(ave. ' +  ave0 + ')' + '</p>'
 		);
-		angle += deg2rad(360/10) * ela0/1000;
 
 		var timeoutId = setTimeout(drawLoop, 33);
 		
@@ -204,11 +205,12 @@ $(function () {
 	function deg2rad(deg) {
 		return deg * Math.PI / 180;
 	}
+	
 	function num2str(num, len) {
-		var str = num + "";
-		while (str.length <  len) 
+		var str = num + ""; 
+		while (str.length < len)
 			str = " " + str;
-		return str;
+		return str.replace(/ /g, "&nbsp;");
 	}
 	
 	////////////////////

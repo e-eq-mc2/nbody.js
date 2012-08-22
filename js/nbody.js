@@ -2,8 +2,9 @@
  * @author nk.nishizawa@gmail.com
  */
 
-function NbodySystem(num) {
 "use strict";
+
+function NbodySystem(num) {
 	this.num = num;
 	this.pos = new Float32Array(this.num*3);
 	this.vel = new Float32Array(this.num*3);
@@ -14,7 +15,6 @@ function NbodySystem(num) {
 }
 
 NbodySystem.prototype.init = function () {
-"use strict";
 	var num = this.num;
 	for (var i=0; i < num; ++i) {
 		var u = randomV3();
@@ -27,7 +27,7 @@ NbodySystem.prototype.init = function () {
 		this.vel[ii+1] = u[1] * s;
 		this.vel[ii+2] = u[2] * s;
 		
-		this.mas[i   ] = Math.random();
+		this.mas[i   ] = Math.random()*0.9+0.1; // 0.1 <= mass < 1.0
 		if (i == 0) {
 			this.pos[ii  ] = 0;
 			this.pos[ii+1] = 0;

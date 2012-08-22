@@ -40,10 +40,10 @@ p {
 }
 
 #canvasArea {
-	width: 400px;
-	height: 400px;
+	width: 500px;
+	height: 500px;
 	position: absolute;
-	top: 200px;
+	top: 100px;
 }
 
 #info {
@@ -53,6 +53,7 @@ p {
 #info p {
 	font-size: 15px;
 	line-height: 1.2;
+/*	font-family: "courier", "new courier";*/
 	font-family: "courier";
 }
 
