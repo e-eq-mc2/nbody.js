@@ -54,7 +54,6 @@ NbodySystem.prototype.init = function () {
 };
 
 NbodySystem.prototype.update = function () {
-"use strict";
 	var num = this.num;
 	var dt = this.dt;
 	var soften2 = this.soften2;

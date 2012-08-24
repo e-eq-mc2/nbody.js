@@ -2,15 +2,16 @@
  * @author nk.nishizawa@gmail.com
  */
 
-$(function () {
 "use strict";
+
+$(function () {
 	var canvas = $("#webglCanvas").get(0);
 	canvas.width  = $("#canvasArea").width();
 	canvas.height = $("#canvasArea").height();
 	
 	var gl     = webglUtil.initGL(canvas);
 	var prgObj = webglUtil.initShaders(gl);
-	var texObj = webglUtil.initTexture(gl, "img/karada1.png");
+	var texObj = webglUtil.initTexture(gl, "img/karada0.png");
 
 	var attrib = {
 		vertex : {
@@ -116,7 +117,7 @@ $(function () {
 				unsetAttrib(gl, attrib.vertex);
 				break;
 			case DRAW_MODE.BILL_BOARD:
-				var board = new BillBoard(nbSys.num, nbSys.pos, 0.08, 0.08);
+				var board = new BillBoard(nbSys.num, nbSys.pos, 0.06, 0.06);
 				gl.uniform1i(uniform.texSampler.location, 0);
 				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.7]);
 				setAttrib(gl, attrib.vertex, board.pos);
