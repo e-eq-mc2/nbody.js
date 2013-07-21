@@ -50,8 +50,8 @@ $(function () {
 		}
 	};
 	
-	var NUM_BODY =  256;
-	var MAX_LOOP = 5000;
+	var NUM_BODY =  1024;
+	var MAX_LOOP = 10000;
 	
 	var nbSys = new NbodySystem(NUM_BODY);
 	nbSys.init();
@@ -84,7 +84,10 @@ $(function () {
 		
 		var  pM = M4x4.clone(M4x4.I);
 		var mvM = M4x4.clone(M4x4.I);
-		M4x4.makeFrustum(-0.1, 0.1, -0.1, 0.1, 0.3, 10, pM); // left right bottom top near far
+		var aspect = gl.viewportWidth  / gl.viewportHeight;
+		var halfH = 0.1;
+		var halfW = halfH * aspect;
+		M4x4.makeFrustum(-halfW, halfW, -halfH, halfH, 0.3, 10, pM); // left right bottom top near far
 		M4x4.translate3(0, 0, -1.5, mvM, mvM); // mvM = mvM * T
 		M4x4.rotate(angle, [0, 1, 0], mvM, mvM); // mvM = mvM * R
 		gl.uniformMatrix4fv(uniform.projectionMatrix.location, uniform.projectionMatrix.transpose,  pM);
@@ -98,7 +101,7 @@ $(function () {
 		gl.bindTexture(gl.TEXTURE_2D, texObj);
 		switch ( Number(drawMode) ) {
 			case DRAW_MODE.POINT:
-				gl.uniform4fv(uniform.color.location, [0, 0, 0, 0.5]);
+				gl.uniform4fv(uniform.color.location, [0, 0, 0, 0.8]);
 				gl.uniform1f(uniform.pointSize.location, 8);
 				setAttrib(gl, attrib.vertex, nbSys.pos);
 				
@@ -108,7 +111,7 @@ $(function () {
 				break;
 			case DRAW_MODE.POINT_SPRITE:
 				gl.uniform1i(uniform.texSampler.location, 0);
-				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.7]);
+				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.8]);
 				gl.uniform1f(uniform.pointSize.location, 32);
 				setAttrib(gl, attrib.vertex, nbSys.pos);
 				
@@ -117,9 +120,9 @@ $(function () {
 				unsetAttrib(gl, attrib.vertex);
 				break;
 			case DRAW_MODE.BILL_BOARD:
-				var board = new BillBoard(nbSys.num, nbSys.pos, 0.06, 0.06);
+				var board = new BillBoard(nbSys.num, nbSys.pos, 0.05, 0.05);
 				gl.uniform1i(uniform.texSampler.location, 0);
-				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.7]);
+				gl.uniform4fv(uniform.color.location, [1, 1, 1, 0.8]);
 				setAttrib(gl, attrib.vertex, board.pos);
 				setAttrib(gl, attrib.texCoord, board.tex);
 				gl.bindBuffer(gl.ELEMENT_ARRAY_BUFFER, t3Idx.ibo);
@@ -349,6 +352,7 @@ V3.cross = function (v0, v1) {
  */
 var webglUtil = {};
 webglUtil.initGL = function (canvas) {
+	var DEBUG_MODE = true;
 	var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl"); // A || B : if (A == true) return A else return B
 	if ( !gl ) {
 		alert('ERROR: not support "webgl" | "experimental-webgl"');
@@ -357,8 +361,12 @@ webglUtil.initGL = function (canvas) {
     //set view port
 	gl.viewportWidth  = canvas.width ;
 	gl.viewportHeight = canvas.height;
-	//return gl;
-	return WebGLDebugUtils.makeDebugContext(gl);
+	
+	if (DEBUG_MODE) {
+		console.log("webgl: DEBUG MODE");
+		return WebGLDebugUtils.makeDebugContext(gl);
+	}
+	return gl;
 };
 
 webglUtil.initShaders = function (gl) {

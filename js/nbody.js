@@ -9,8 +9,8 @@ function NbodySystem(num) {
 	this.pos = new Float32Array(this.num*3);
 	this.vel = new Float32Array(this.num*3);
 	this.mas = new Float32Array(this.num  );
-	this.dt = 0.0002;
-	this.soften2 = 0.1250; // softening factor
+	this.dt = 0.00005;
+	this.soften2 = 0.01 * 0.01; // softening factor
 	this.damping = 0.9995;
 }
 
@@ -23,11 +23,11 @@ NbodySystem.prototype.init = function () {
 		this.pos[ii  ] = u[0] * s;
 		this.pos[ii+1] = u[1] * s;
 		this.pos[ii+2] = u[2] * s;
-		this.vel[ii  ] = u[0] * s;
-		this.vel[ii+1] = u[1] * s;
-		this.vel[ii+2] = u[2] * s;
+		this.vel[ii  ] = 0.0;
+		this.vel[ii+1] = 0.0;
+		this.vel[ii+2] = 0.0;
 		
-		this.mas[i   ] = Math.random()*0.9+0.1; // 0.1 <= mass < 1.0
+		this.mas[i   ] = (Math.random()*0.9+0.1) * 3.0; // 0.2 <= mass < 2.0
 		if (i == 0) {
 			this.pos[ii  ] = 0;
 			this.pos[ii+1] = 0;
@@ -35,7 +35,7 @@ NbodySystem.prototype.init = function () {
 			this.vel[ii  ] = 0;
 			this.vel[ii+1] = 0;
 			this.vel[ii+2] = 0;
-			this.mas[i   ] =10;
+			this.mas[i   ] = 5;
 		}
 	};
 	
@@ -68,7 +68,7 @@ NbodySystem.prototype.update = function () {
 		var aiy = 0;
 		var aiz = 0;
 		for (var j=0; j < num; ++j) {
-			//if (i == j) continue;
+			if (i == j) continue;
 			var jj = j * 3;
 			var pjx = this.pos[jj  ];
 			var pjy = this.pos[jj+1];
