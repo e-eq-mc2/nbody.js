@@ -5,12 +5,14 @@
 		<link rel="stylesheet" type="text/css" href="css/html5reset-1.6.1.css">
 		<link rel="stylesheet" type="text/css" href="css/main.css">
 		<title>nbody.js</title>
-		<script type="text/javascript" src="js/lib/jquery-1.7.2.min.js"></script>
+		<script type="text/javascript" src="js/lib/jquery-1.10.2.js"></script>
 		<script type="text/javascript" src="js/lib/webgl-debug.js"></script>
 		<script type="text/javascript" src="js/lib/mjs.js"></script>
 		<script type="text/javascript" src="js/nbody.js"></script>
 		<script type="text/javascript" src="js/main.js"></script>
 		<script id="vxs" type="x-shader/x-vertex">
+precision mediump int;     // it's necessary for chrome 
+
 attribute vec3 vertex;
 attribute vec2 texCoord;
 
@@ -38,12 +40,13 @@ void main(void) {
 		
 		<script id="fgs" type="x-shader/x-fragment">
 precision mediump float;
+precision mediump int;
 
-uniform sampler2D texSampler;
 uniform int drawMode;
+uniform sampler2D texSampler;
 
-varying vec4 vColor;
 varying vec2 vTexCoord;
+varying vec4 vColor;
 
 void main(void){
 	if (drawMode == 0) {

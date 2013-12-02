@@ -10,6 +10,7 @@ $(function () {
 	canvas.height = $("#canvasArea").height();
 	
 	var gl     = webglUtil.initGL(canvas);
+	if ( !gl ) return;
 	var prgObj = webglUtil.initShaders(gl);
 	var texObj = webglUtil.initTexture(gl, "img/karada0.png");
 
@@ -73,7 +74,6 @@ $(function () {
 		gl.depthFunc(gl.LEQUAL);
 		gl.enable(gl.BLEND);
 		gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA, gl.ONE, gl.ONE);
-		//gl.enable(gl.CULL_FACE);
 		gl.clearColor(1, 1, 1, 1);
 		gl.clearDepth(1);
 		gl.clear(gl.COLOR_BUFFER_BIT | gl.DEPTH_BUFFER_BIT);
@@ -93,10 +93,10 @@ $(function () {
 		gl.uniformMatrix4fv(uniform.projectionMatrix.location, uniform.projectionMatrix.transpose,  pM);
 		gl.uniformMatrix4fv(uniform. modelViewMatrix.location, uniform. modelViewMatrix.transpose, mvM);
 		
-		var drawMode = $('input:radio:[name="drawMode"]:checked').val();
+		var drawMode = $('input:radio[name="drawMode"]:checked').val();
 		var DRAW_MODE = {POINT: 0, POINT_SPRITE: 1, BILL_BOARD: 2};
 		gl.uniform1i(uniform.drawMode.location, Number(drawMode));
-		// selects which texture unit subsequent texture state calls will affect
+		// select which texture unit will affect to subsequent texture state calls
 		gl.activeTexture(gl.TEXTURE0);
 		gl.bindTexture(gl.TEXTURE_2D, texObj);
 		switch ( Number(drawMode) ) {
@@ -176,9 +176,7 @@ $(function () {
 	// local function //
 	////////////////////
 	function setAttrib(gl, attrib, data) {
-		//console.log("webgl: bind VBO(array buffer) to current BO(buffer object) ...");
 		gl.bindBuffer(gl.ARRAY_BUFFER, attrib.vbo);
-		//console.log("webgl: create data store in current BO(buffer object) and transfer data to current BO ...");
 		gl.bufferData(gl.ARRAY_BUFFER, data, gl.DYNAMIC_DRAW);
 		// enable vertex attribute array specified by location(index). if enabled, it is used for rendering such as gl.Draw(Arrays|Elements|etc.)
 		gl.enableVertexAttribArray(attrib.location);
@@ -189,7 +187,6 @@ $(function () {
 			attrib.type,
 			false, 0, 0
 		);	
-		//console.log("webgl: un-bind VBO(array buffer) ...");
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
 	
@@ -201,7 +198,6 @@ $(function () {
 		gl.disableVertexAttribArray(attrib.location);
 		gl.bindBuffer(gl.ARRAY_BUFFER, null);
 	}
-	
 
 	////////////////////
 	// local function //
@@ -352,17 +348,19 @@ V3.cross = function (v0, v1) {
  */
 var webglUtil = {};
 webglUtil.initGL = function (canvas) {
-	var DEBUG_MODE = true;
+	var DEBUG_MODE = false;
+	
 	var gl = canvas.getContext("webgl") || canvas.getContext("experimental-webgl"); // A || B : if (A == true) return A else return B
 	if ( !gl ) {
-		alert('ERROR: not support "webgl" | "experimental-webgl"');
-		return;
+		alert('ERROR: WebGL is not available on your browser...orz');
+		return null;
 	}
+	
     //set view port
 	gl.viewportWidth  = canvas.width ;
 	gl.viewportHeight = canvas.height;
 	
-	if (DEBUG_MODE) {
+	if ( DEBUG_MODE ) {
 		console.log("webgl: DEBUG MODE");
 		return WebGLDebugUtils.makeDebugContext(gl);
 	}
@@ -472,27 +470,27 @@ webglUtil.initTexture = function (gl, src) {
  * 
  */
 function Timer() {
-	Timer.prototype.reset = function() {
-		this.timeStart = 0;
-		this.timeStop = 0;
-		this.elapsed = 0;
-		this.elapsedTotal = 0;
-	};
-	Timer.prototype.start = function() {
-		this.timeStart = new Date().getTime();
-		return this.timeStart;
-	};
-	Timer.prototype.stop = function() {
-		this.timeStop = new Date().getTime();
-		this.elapsed = this.timeStop - this.timeStart;
-		this.elapsedTotal += this.elapsed;
-		return this.timeStop;
-	};
-	Timer.prototype.elapsedMsec = function() {
-		return this.elapsed;
-	};
-	Timer.prototype.elapsedTotalMsec = function() {
-		return this.elapsedTotal;
-	};
 	this.reset();
 }
+Timer.prototype.reset = function() {
+	this.timeStart = 0;
+	this.timeStop = 0;
+	this.elapsed = 0;
+	this.elapsedTotal = 0;
+};
+Timer.prototype.start = function() {
+	this.timeStart = new Date().getTime();
+	return this.timeStart;
+};
+Timer.prototype.stop = function() {
+	this.timeStop = new Date().getTime();
+	this.elapsed = this.timeStop - this.timeStart;
+	this.elapsedTotal += this.elapsed;
+	return this.timeStop;
+};
+Timer.prototype.elapsedMsec = function() {
+	return this.elapsed;
+};
+Timer.prototype.elapsedTotalMsec = function() {
+	return this.elapsedTotal;
+};
