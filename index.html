@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="ja">
+	<head>
+		<meta charset="UTF-8">
+		<link rel="stylesheet" type="text/css" href="css/html5reset-1.6.1.css">
+		<link rel="stylesheet" type="text/css" href="css/main.css">
+		<title>nbody.js</title>
+		<script type="text/javascript" src="js/lib/jquery-1.10.2.js"></script>
+		<script type="text/javascript" src="js/lib/webgl-debug.js"></script>
+		<script type="text/javascript" src="js/lib/mjs.js"></script>
+		<script type="text/javascript" src="js/nbody.js"></script>
+		<script type="text/javascript" src="js/main.js"></script>
+		<script id="vxs" type="x-shader/x-vertex">
+precision mediump float;
+precision mediump int;     // it's necessary for chrome 
+
+attribute vec3 vertex;
+attribute vec2 texCoord;
+
+uniform mat4 modelViewMatrix;
+uniform mat4 projectionMatrix;
+
+uniform int   drawMode;
+uniform float pointSize;
+uniform vec4  color;
+
+varying vec2 vTexCoord;
+varying vec4 vColor;
+
+void main(void) {
+	vColor = color;
+	if (drawMode == 0 || drawMode == 1) { // point or point-sprite
+		gl_Position = projectionMatrix * modelViewMatrix * vec4(vertex, 1.0);
+		gl_PointSize = min(32.0, max(1.0, pointSize / gl_Position.w));
+	} else if (drawMode == 2) { // bill-borad
+		gl_Position = projectionMatrix * modelViewMatrix * vec4(vertex, 1.0);
+		vTexCoord = texCoord;
+	}
+}
+		</script>
+		
+		<script id="fgs" type="x-shader/x-fragment">
+precision mediump float;
+precision mediump int;
+
+uniform int drawMode;
+uniform sampler2D texSampler;
+
+varying vec2 vTexCoord;
+varying vec4 vColor;
+
+void main(void){
+	if (drawMode == 0) {
+		gl_FragColor = vColor;
+	} else if (drawMode == 1) {
+		vec4 texColor = texture2D(texSampler, gl_PointCoord);
+		if (texColor.a == 0.0) {
+			discard; // no output fragment
+		} else {
+			gl_FragColor = vColor * texColor;
+		}
+	} else if (drawMode == 2) {
+		vec4 texColor = texture2D(texSampler, vTexCoord);
+		if (texColor.a == 0.0) {
+			discard; // no output fragment
+		} else {
+			gl_FragColor = vColor * texColor;
+		}
+	}
+}
+		</script>
+	</head>
+	<body>
+		<h1>N-body System</h1>
+		<div id="screen">
+			<div id="canvasArea">
+				<canvas id="webglCanvas"></canvas>
+			</div>
+			<div id="textArea">
+				<p>
+					This simulation computes below equation.
+				</p>
+				<p>
+					<img id="img" src="img/eq0.png">
+				</p>
+<!-- 
+http://maru.bonyari.jp/texclip/texclip.php
+\begin{align*}
+F_i = G m_{i} \cdot \sum_{\substack{ 1 \le j \ge N \\ j \ne i}} \frac{m_j \vec{r}_{ij}}{\|\vec{r}_{ij}\|^3}
+\end{align*}
+\begin{align*}
+F_i \approx G m_{i} \cdot \sum_{1 \le j \ge N} \frac{m_j \vec{r}_{ij}}{ \left( \| \vec{r}_{ij} \|^2 + \epsilon ^2 \right) ^{3 / 2}}
+\end{align*}
+-->	
+				<p>
+					<label><input type="radio" name="drawMode" value="0" checked> point</label>
+					<label><input type="radio" name="drawMode" value="1"> point-sprite</label>
+					<label><input type="radio" name="drawMode" value="2"> bill-board </label>
+				</p>
+				<div id="info"></div>
+			</div>
+		</div>
+		<div id="description">
+		</div>
+	</body>
+</html>
