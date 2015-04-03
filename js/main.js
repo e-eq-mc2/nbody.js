@@ -454,7 +454,7 @@ webglUtil.initTexture = function (gl, src) {
 		gl.texParameteri(gl.TEXTURE_2D, gl.TEXTURE_WRAP_T, gl.CLAMP_TO_EDGE);
 		
 		console.log("webgl: generate mipmap ...");
-		//gl.generateMipmap(gl.TEXTURE_2D);
+		gl.generateMipmap(gl.TEXTURE_2D);
 		
 		console.log("webgl: un-bind texture object ...");
 		gl.bindTexture(gl.TEXTURE_2D, null);

@@ -2,6 +2,8 @@ nbody.js - a WebGL demo
 ========
 This is a **WebGL** demo based on **N-body Simulation**.
 
+[Demo Page Here!!](http://e-eq-mc2.github.io/nbody.js/) (try wth a WebGL-enabled browser)
+
 ![](img/thumbnail.png?raw=true)
 
 Quick Start
